@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\User;
 
 class AuthController extends Controller
 {
@@ -12,7 +13,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('JWT', ['except' => ['login', 'signup']]);
     }
 
     /**
@@ -29,6 +30,14 @@ class AuthController extends Controller
         }
 
         return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    public function signup(Request $request)
+    {
+        //$request->password=bcrypt($)
+        User::create($request->all());
+
+        return $this->login($request);
     }
 
     /**

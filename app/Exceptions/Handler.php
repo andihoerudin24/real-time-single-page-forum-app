@@ -4,6 +4,11 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Http\Response;
+use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 class Handler extends ExceptionHandler
 {
@@ -13,7 +18,6 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
     ];
 
     /**
@@ -29,8 +33,7 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
-     * @return void
+     * @param \Exception $exception
      */
     public function report(Exception $exception)
     {
@@ -40,12 +43,27 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
+     * @param \Illuminate\Http\Request $request
+     * @param \Exception               $exception
+     *
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof TokenBlacklistedException) {
+            return response(['eror' => 'Token can not be used', 'get new one'],
+                Response::HTTP_BAD_REQUEST);
+        } elseif ($exception instanceof TokenInvalidException) {
+            return response(['eror' => 'Token is Not Invalid'],
+            Response::HTTP_BAD_REQUEST);
+        } elseif ($exception instanceof TokenExpiredException) {
+            return response(['eror' => 'Token is Expired'],
+            Response::HTTP_BAD_REQUEST);
+        } elseif ($exception instanceof JWTException) {
+            return response(['eror' => 'Token is Not Proveded'],
+            Response::HTTP_BAD_REQUEST);
+        }
+
         return parent::render($request, $exception);
     }
 }
