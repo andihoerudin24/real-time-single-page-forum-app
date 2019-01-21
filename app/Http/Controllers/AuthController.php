@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\User;
+use App\Http\Requests\SignupRequest;
 
 class AuthController extends Controller
 {
@@ -32,7 +33,7 @@ class AuthController extends Controller
         return response()->json(['error' => 'Unauthorized'], 401);
     }
 
-    public function signup(Request $request)
+    public function signup(SignupRequest $request)
     {
         //$request->password=bcrypt($)
         User::create($request->all());
