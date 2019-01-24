@@ -7,6 +7,7 @@
       label="E-mail"
       required >
     </v-text-field>
+     <span class="red--text" v-if="errors.email">{{errors.email[0]}}</span>
 
     <v-text-field
       v-model="form.password"
@@ -36,7 +37,8 @@ export default {
            form:{
                email:null,
                password:null
-           }
+           },
+            errors:{}
        }
      },
      created(){
@@ -46,10 +48,9 @@ export default {
      },
      methods:{
         login(){
-          User.login(this.form)
-
-        }
-     }
+            User.login(this.form)
+         }
+    }
 }
 </script>
 

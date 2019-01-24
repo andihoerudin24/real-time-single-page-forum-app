@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 // index.js or main.js
 @import '~vuetify/dist/vuetify.min.css'; // Ensure you are using css-loader
-
+@import '~simplemde/dist/simplemde.min.css';
 .navbar-laravel {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
