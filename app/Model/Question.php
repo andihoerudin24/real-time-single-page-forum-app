@@ -7,6 +7,8 @@ use App\User;
 
 class Question extends Model
 {
+    protected $with = ['replies'];
+
     protected static function boot()
     {
         parent::boot();
@@ -30,7 +32,7 @@ class Question extends Model
 
     public function replies()
     {
-        return $this->hasMany(Reply::class, 'question_id', 'id');
+        return $this->hasMany(Reply::class, 'question_id', 'id')->latest();
     }
 
     public function cateegory()
