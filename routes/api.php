@@ -6,6 +6,11 @@ Route::apiResource('/question/{question}/reply', 'ReplyController');
 Route::post('/like/{reply}/', 'LikeController@LikeIt');
 Route::delete('/like/{reply}/', 'LikeController@unLikeIt');
 
+Route::post('notifications', function () {
+    return[
+        ];
+});
+
 Route::group([
     'middleware' => 'api',
     'prefix' => 'auth',

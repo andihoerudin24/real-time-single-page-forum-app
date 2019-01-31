@@ -2,6 +2,7 @@
   <v-toolbar>
     <v-toolbar-title>Bitfumes</v-toolbar-title>
     <v-spacer></v-spacer>
+    <app-notification></app-notification>
               <div class="hidden-sm-and-down">
                     <router-link
                     v-for="item in items"
@@ -14,7 +15,9 @@
 </v-toolbar>
 </template>
 <script>
+import AppNotification from './AppNotification';
 export default {
+  components:{AppNotification},
   data() {
     return {
       items: [
