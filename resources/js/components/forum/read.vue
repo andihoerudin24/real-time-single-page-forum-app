@@ -14,7 +14,8 @@
           <v-container>
                 <replies :question="question"></replies>
 
-                <new-reply :questionSlug="question.slug"></new-reply>
+                <new-reply v-if="loggedIn" :questionSlug="question.slug"></new-reply>
+                <div v-else class="mt-4"><router-link to="/login">login To Reply</router-link></div>
           </v-container>
 
     </div>
@@ -32,6 +33,11 @@ export default {
              question:null,
              editing:false
          }
+    },
+    computed:{
+            loggedIn(){
+                return User.loggedIn()
+            }
     },
    created(){
        //console.log(this.$router.params.slug)

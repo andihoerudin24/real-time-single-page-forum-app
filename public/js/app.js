@@ -1830,9 +1830,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     if (User.loggedIn()) {
@@ -2178,8 +2175,25 @@ __webpack_require__.r(__webpack_exports__);
   props: ['data'],
   data: function data() {
     return {
-      own: User.own(this.data.user_id)
+      own: User.own(this.data.user_id),
+      replyCount: this.data.reply_count
     };
+  },
+  created: function created() {
+    var _this = this;
+
+    EventBus.$on('newReply', function () {
+      _this.replyCount++;
+    });
+    Echo.private('App.User.' + User.id()).notification(function (notification) {
+      _this.replyCount++;
+    });
+    EventBus.$on('deleteReply', function () {
+      _this.replyCount--;
+    });
+    Echo.channel('deleteReplyChannel').listen('DeleteReplyEvent', function (e) {
+      _this.replyCount--;
+    });
   },
   computed: {
     body: function body() {
@@ -2188,10 +2202,10 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     destroy: function destroy() {
-      var _this = this;
+      var _this2 = this;
 
       axios.delete("/api/question/".concat(this.data.slug)).then(function (res) {
-        return _this.$router.push('/forum');
+        return _this2.$router.push('/forum');
       }).catch(function (error) {
         return console.log(error.response.data);
       });
@@ -2423,6 +2437,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -2439,6 +2454,11 @@ __webpack_require__.r(__webpack_exports__);
       question: null,
       editing: false
     };
+  },
+  computed: {
+    loggedIn: function loggedIn() {
+      return User.loggedIn();
+    }
   },
   created: function created() {
     //console.log(this.$router.params.slug)
@@ -66864,7 +66884,7 @@ var render = function() {
               _c("v-spacer"),
               _vm._v(" "),
               _c("v-btn", { attrs: { color: "teal", dark: "" } }, [
-                _vm._v(_vm._s(_vm.data.reply_count) + " Replies")
+                _vm._v(_vm._s(_vm.replyCount) + " Replies")
               ])
             ],
             1
@@ -67184,7 +67204,20 @@ var render = function() {
             [
               _c("replies", { attrs: { question: _vm.question } }),
               _vm._v(" "),
-              _c("new-reply", { attrs: { questionSlug: _vm.question.slug } })
+              _vm.loggedIn
+                ? _c("new-reply", {
+                    attrs: { questionSlug: _vm.question.slug }
+                  })
+                : _c(
+                    "div",
+                    { staticClass: "mt-4" },
+                    [
+                      _c("router-link", { attrs: { to: "/login" } }, [
+                        _vm._v("login To Reply")
+                      ])
+                    ],
+                    1
+                  )
             ],
             1
           )
@@ -105574,7 +105607,20 @@ function () {
   }, {
     key: "decode",
     value: function decode(payload) {
-      return JSON.parse(atob(payload));
+      if (this.isBase64(payload)) {
+        return JSON.parse(atob(payload));
+      }
+
+      return false;
+    }
+  }, {
+    key: "isBase64",
+    value: function isBase64(str) {
+      try {
+        return btoa(atob(str)).replace(/=/g, "") == str;
+      } catch (err) {
+        return false;
+      }
     }
   }]);
 
@@ -105640,7 +105686,7 @@ function () {
       var storedToken = _AppStorage__WEBPACK_IMPORTED_MODULE_1__["default"].getToken();
 
       if (storedToken) {
-        return _Token__WEBPACK_IMPORTED_MODULE_0__["default"].isValid(storedToken) ? true : false;
+        return _Token__WEBPACK_IMPORTED_MODULE_0__["default"].isValid(storedToken) ? true : this.logout();
       }
 
       return false;

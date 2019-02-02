@@ -10,6 +10,14 @@ class NotificationController extends Controller
     /**
      * Create a new AuthController instance.
      */
+    public function __construct()
+    {
+        $this->middleware('JWT');
+    }
+
+    /**
+     * Create a new AuthController instance.
+     */
     public function index()
     {
         $user = App\User::find(58);
