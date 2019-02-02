@@ -51,9 +51,10 @@ if (token) {
 
 window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: "c738ea83deb5242a3563",
-    cluster:"ap1",
-    encrypted: true,
+    key: "andihoerudin",
+    wsHost: window.location.hostname,
+    wsPort: 6001,
+    disableStats: true,
     auth:{
         headers:{
             Authorization: JwtToken

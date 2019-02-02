@@ -1,6 +1,8 @@
 <template>
-  <v-toolbar>
-    <v-toolbar-title>Bitfumes</v-toolbar-title>
+  <v-toolbar color="cyan" dark >
+    <v-toolbar-title>
+      <router-link class="white--text" to="/">Forum App</router-link>
+    </v-toolbar-title>
     <v-spacer></v-spacer>
     <app-notification></app-notification>
               <div class="hidden-sm-and-down">

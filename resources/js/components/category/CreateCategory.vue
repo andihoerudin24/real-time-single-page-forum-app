@@ -1,5 +1,11 @@
 <template>
       <v-container>
+           <v-alert v-if="errors.name"
+                :value="true"
+                type="error"
+                >
+               {{errors.name[0]}}
+          </v-alert>
           <v-form @submit.prevent="submit">
                  <v-text-field
                     v-model="form.name"
@@ -7,8 +13,8 @@
                     required >
                 </v-text-field>
 
-                <v-btn type="submit" color="pink" v-if="editSlug">Update</v-btn>
-                <v-btn type="submit" color="indigo" v-else>Create</v-btn>
+                <v-btn type="submit" :disabled="disabled" color="pink" v-if="editSlug">Update</v-btn>
+                <v-btn type="submit" :disabled="disabled" color="indigo" v-else>Create</v-btn>
           </v-form>
 
           <v-card>
@@ -56,7 +62,8 @@ export default {
                   name:null,
               },
               categories:[],
-              editSlug:null
+              editSlug:null,
+              errors:{}
           }
       },
       created() {
@@ -64,7 +71,8 @@ export default {
                 this.$router.push('/forum')
           }
             axios.get("/api/category")
-            .then(res => (this.categories = res.data.data));
+            .then(res => (this.categories = res.data.data))
+             .catch(error => this.errors = error.response.data.errors);
       },
       methods:{
           submit(){
@@ -77,7 +85,7 @@ export default {
                     this.categories.unshift(res.data);
                     this.form.name = null;
                     })
-                    .catch(error => (this.errors = error.response.data.errors));
+                    //.catch(error => this.errors = error.response.data.errors);
 
           },
           create(){
@@ -98,7 +106,12 @@ export default {
               this.form.name=this.categories[index].name
               this.editSlug=this.categories[index].slug
               this.categories.splice(index,1)
-         }
+         },
+      },
+      computed:{
+          disabled(){
+            //  return !this.form.name
+          }
       }
 }
 </script>
